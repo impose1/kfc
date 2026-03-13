@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>疯狂星期四 | KFC V Me 50 豪华版 v2.0</title>
+    <style>
+        :root {
+            --kfc-red: #e4002b;
+            --kfc-dark: #b30021;
+            --glass: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+        }
+
+        body {
+            background: #0f0f0f;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            /* 必须防止由于悬浮图超出边界导致的滚动条 */
+            overflow: hidden; 
+            position: relative;
+        }
+
+        /* --- 动态流光背景 --- */
+        .background {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, #4a000e 0%, #000000 100%);
+            z-index: -2; /* 放在最底层 */
+        }
+
+        .light-blob {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: var(--kfc-red);
+            filter: blur(120px);
+            border-radius: 50%;
+            opacity: 0.4;
+            animation: moveLight 10s infinite alternate;
+        }
+
+        @keyframes moveLight {
+            from { transform: translate(-20%, -20%); }
+            to { transform: translate(20%, 20%); }
+        }
+
+        /* --- 玻璃拟态主体卡片 --- */
+        .container {
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 3rem;
+            border-radius: 24px;
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            z-index: 10; /* 确保主体在悬浮图之上，方便点击 */
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(to bottom, #fff, #ffcccb);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: #ff9999;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            font-weight: bold;
+            margin-bottom: 2rem;
+        }
+
+        .joke-box {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-style: italic;
+            line-height: 1.6;
+            transition: all 0.3s ease;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .cta-button {
+            background: var(--kfc-red);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(228, 0, 43, 0.3);
+            flex: 1;
+            min-width: 140px;
+        }
+
+        .cta-button:hover {
+            transform: scale(1.05);
+            background: var(--kfc-dark);
+            box-shadow: 0 15px 30px rgba(228, 0, 43, 0.5);
+        }
+
+        .cta-button.secondary {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.5);
+        }
+        
+        .cta-button.secondary:hover {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid white;
+        }
+
+        .footer-note {
+            margin-top: 2rem;
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.4);
+        }
+
+        /* --- 悬浮图片广告样式 --- */
+        .floating-ad {
+            position: absolute;
+            width: 150px; /* 设定统一宽度，高度自适应 */
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.8);
+            cursor: pointer;
+            z-index: 1; /* 在背景之上，在主体卡片之下 */
+            transition: transform 0.1s linear; /* 让移动更平滑 */
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+        
+        /* 手机端图片缩小一点 */
+        @media (max-width: 600px) {
+            .floating-ad {
+                width: 100px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="background">
+        <div class="light-blob"></div>
+    </div>
+
+    <div class="container">
+        <div class="subtitle">Crazy Thursday</div>
+        <h1>疯狂星期四</h1>
+        
+        <div class="joke-box" id="joke-content">
+            谁能想到，就在刚刚，我原本以为自己要收获一段刻骨铭心的爱情了。直到他开口对我说：“能不能 V 我 50 吃顿肯德基？”
+        </div>
+
+        <div class="button-group">
+            <button class="cta-button" onclick="refreshJoke()">再来一段 literature</button>
+            <button class="cta-button secondary" onclick="copyV50()">一键复制口令</button>
+        </div>
+
+        <p class="footer-note">不要在此页面寻找逻辑，就像不要在星期四寻找原价炸鸡。</p>
+    </div>
+
+    <div id="ad-container"></div>
+
+    <script>
+        // --- 疯四文学库 (已扩充至 >20条) ---
+        const jokes = [
+            "如果你觉得生活不如意，不要灰心。哪怕你今天过得再惨，肯德基星期四也是要疯狂的。V 我 50，聆听我的复仇计划。",
+            "有人问我：为什么你每天都这么努力？我：为了在这个疯狂的星期四，能面不改色地走进肯德基，甚至能请你也吃一顿（V 我 50 除外）。",
+            "其实我也不是一定要吃肯德基。我只是觉得，在这个物欲横流的时代，50 块钱能买到的不仅仅是原味鸡，还有我们之间支离破碎的友谊。",
+            "我摊牌了，我不装了。我就是为了那 50 块钱才跟你聊到现在的。疯狂星期四，懂？",
+            "即使整个世界都背叛了你，肯德基吮指原味鸡也不会背叛你。但前提是，你得先 V 我 50。",
+            "我是秦始皇，我其实没死，我在西安有 100 吨黄金。现在急需 50 元解冻账户，只要你 V 我 50 买肯德基，等我回宫，封你为大将军！",
+            "生而为人，我很抱歉。但如果你 V 我 50 吃个疯狂星期四，我不仅不抱歉，我还能为你表演一个原地复活。",
+            "现在的女孩子真难追，我发了 1000 字表白她不回，我发了一个‘疯狂星期四 V 我 50’，她居然回了个‘滚’。她心里果然有我！",
+            "我本是显赫世家的奥特曼，却被奸人所害，丢失变身器。现在急需 50 元补充能量重回 M78 星云，V 我 50，保卫地球！",
+            "每一个成功的男人背后都有一个伟大的女人，但每一个饥饿的打工人背后，都需要一个星期四 V 他 50 的好心人。",
+            "世界上最遥远的距离，不是生与死，而是我就站在肯德基门口，却没人 V 我 50。",
+            "所谓成熟，就是不再为了爱情寻死觅活，而是学学会星期四这天，优雅地问朋友：V 我 50 行吗？",
+            "今天是由于太阳耀斑爆发导致的时空不稳，只有在这个星期四 V 我 50 元人民币，才能构建稳定的人类防线。这不是骗局，这是科学。",
+            "通知：由于您近期表现良好，获得了一次拯救濒危人类（也就是我）的机会。请于今日内完成 50 元的转账，指定用途：肯德基疯狂星期四。",
+            "你以为我缺的是那 50 块钱吗？不，我缺的是你对我那份沉甸甸的关爱（如果是 50 块钱装在关爱里就更好了）。",
+            "弱肉强食的世界，只有强者才能生存。今天，我要做那个吃吮指原味鸡的强者。而你，只需要做那个 V 我 50 的幕后推手。",
+            "你发工资了，我替你高兴；你转我 50，我替你吃肯德基。我们都有光明的未来。",
+            "刚接到医院电话，说我体内的‘炸鸡因子’严重不足，再不补充就要枯萎了。医生建议：立刻 V 我 50，疯狂星期四，救我一命。",
+            "我有一个梦想，就是每个星期的第四天，全世界的人都能互道一声：“你 V 他 50 了吗？”",
+            "这是一条经过加密的信息，只有长得好看且大方的人才能看到。如果你看到了，说明你该 V 我 50 请我吃疯狂星期四了。",
+            "别跟我谈理想，我的理想是不上班；别跟我谈爱情，我的爱情需要 50 块钱的肯德基来启动。"
+        ];
+
+        let lastIndex = -1;
+
+        function refreshJoke() {
+            const content = document.getElementById('joke-content');
+            let randomIndex;
+            
+            do {
+                randomIndex = Math.floor(Math.random() * jokes.length);
+            } while (randomIndex === lastIndex);
+            
+            lastIndex = randomIndex;
+            const randomJoke = jokes[randomIndex];
+            
+            content.style.opacity = 0;
+            content.style.transform = "translateY(10px)";
+            setTimeout(() => {
+                content.innerText = randomJoke;
+                content.style.opacity = 1;
+                content.style.transform = "translateY(0)";
+            }, 200);
+        }
+
+        function copyV50() {
+            navigator.clipboard.writeText("今天是肯德基疯狂星期四，V我50，聆听我的复仇计划。").then(() => {
+                alert("口令已复制，快发给那个冤大头（啊不，好朋友）吧！");
+            });
+        }
+
+        // --- 悬浮图片(老式CMS广告) 逻辑 ---
+
+        const adImages = [
+            'pic/a1.jpg',
+
+'pic/a2.jpg',
+
+'pic/a3.jpg',
+
+'pic/a4.jpg',
+
+'pic/a5.jpg',
+
+'pic/a6.jpg',
+
+'pic/a7.webp',
+
+'pic/a8.webp',
+
+'pic/a9.webp',
+
+'pic/a10.webp',
+
+'pic/a11.gif',
+
+'pic/a12.webp',
+
+'pic/a13.webp',
+
+'pic/a14.webp',
+
+'pic/a15.webp',
+
+'pic/a16.webp',
+
+'pic/a17.webp',
+
+'pic/a18.webp',
+
+'pic/a19.webp',
+
+'pic/a20.webp'
+        ];
+
+        const ads = []; 
+
+        // 初始化广告
+        function initAds() {
+            const n = 9; // 此处指定随机展示图片的个数
+            const container = document.getElementById('ad-container');
+            const screenWidth = window.innerWidth;
+            const screenHeight = window.innerHeight;
+
+            // 随机选取 n 个图片 (Fisher-Yates 洗牌算法变体)
+            const shuffled = adImages.sort(() => 0.5 - Math.random());
+            const selectedImages = shuffled.slice(0, Math.min(n, adImages.length));
+
+            selectedImages.forEach((src, i) => {
+                const img = document.createElement('img');
+                img.src = src;
+                img.className = 'floating-ad';
+                img.id = `ad-${i}`;
+                container.appendChild(img);
+
+                const initialX = Math.random() * (screenWidth - 150);
+                const initialY = Math.random() * (screenHeight - 150);
+
+                let vx = (Math.random() * 2 +0.5) * (Math.random() < 0.5 ? 1 : -1);
+                let vy = (Math.random() * 2 +0.5) * (Math.random() < 0.5 ? 1 : -1);
+
+                ads.push({
+                    element: img,
+                    x: initialX,
+                    y: initialY,
+                    vx: vx,
+                    vy: vy,
+                    width: 150, 
+                    height: 150 
+                });
+
+                img.onclick = function() {
+                    copyV50();
+                }
+            });
+        }
+
+        // 广告运动逻辑
+        function moveAds() {
+            const screenWidth = window.innerWidth;
+            const screenHeight = window.innerHeight;
+
+            ads.forEach(ad => {
+                ad.width = ad.element.offsetWidth || 150;
+                ad.height = ad.element.offsetHeight || 150;
+
+                ad.x += ad.vx;
+                ad.y += ad.vy;
+
+                if (ad.x + ad.width >= screenWidth || ad.x <= 0) {
+                    ad.vx = -ad.vx;
+                    ad.x = ad.x <= 0 ? 0 : screenWidth - ad.width;
+                }
+
+                if (ad.y + ad.height >= screenHeight || ad.y <= 0) {
+                    ad.vy = -ad.vy;
+                    ad.y = ad.y <= 0 ? 0 : screenHeight - ad.height;
+                }
+
+                ad.element.style.left = ad.x + 'px';
+                ad.element.style.top = ad.y + 'px';
+            });
+
+            requestAnimationFrame(moveAds);
+        }
+
+        window.onload = function() {
+            refreshJoke();
+            initAds();
+            setTimeout(moveAds, 500); 
+        };
+
+        window.onresize = function() {
+            ads.forEach(ad => {
+                if (ad.x + ad.element.offsetWidth > window.innerWidth) {
+                    ad.x = window.innerWidth - ad.element.offsetWidth;
+                }
+                if (ad.y + ad.element.offsetHeight > window.innerHeight) {
+                    ad.y = window.innerHeight - ad.element.offsetHeight;
+                }
+            });
+        };
+
+    </script>
+</body>
+</html>
